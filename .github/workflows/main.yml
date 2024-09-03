@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-lastest
+    steps:
+      -
+        name: Login to docker hub
+        uses: docker/login-actions@v3
+        with:
+          username: ${{vars.DOCKER_USERNAME }}
+          password: ${{ secrests.DOCKERHUB_TOKEN}}
+      -
+        name: Setup up docker buildx
+        uses: docker/steup-buildx-actions@v3
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ vars.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+          
